@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Arogya Sutra</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your App Name</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Arogya Sutra</h1>
+        <form id="symptomForm">
+            <textarea id="symptom" placeholder="Enter your symptom" required rows="4" cols="50"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="results"></div>
+    </div>
+    <script>
+        document.getElementById('symptomForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const symptom = document.getElementById('symptom').value;
+
+            try {
+                // Fetch remedies
+                const remediesResponse = await fetch('http://127.0.0.1:5000/get_remedies', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({symptom})
+                });
+                const remediesData = await remediesResponse.json();
+                document.getElementById('results').innerHTML = `<h2>Remedies:</h2><p>${remediesData.remedies}</p>`;
+
+                // Fetch warning
+                //const warningResponse = await fetch('http://127.0.0.1:5000/get_warning', {
+                //    method: 'POST',
+                //    headers: {'Content-Type': 'application/json'},
+                //    body: JSON.stringify({symptom})
+                //});
+                //const warningData = await warningResponse.json();
+                //if (warningData.warning) {
+                //    document.getElementById('results').innerHTML += `<h2>Warning:</h2><p>${warningData.warning}</p>`;
+                //}
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<p>Something went wrong. Please try again later.</p>`;
+            }
+        });
+    </script>
+</body>
+
+</html>
